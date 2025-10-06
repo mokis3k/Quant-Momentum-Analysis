@@ -1,7 +1,7 @@
 import pandas as pd
 
 # reading CSV
-df = pd.read_csv("./RawLogs/EUR-15M-50.csv", sep="\t", encoding="utf-16")
+df = pd.read_csv("./RawLogs/EUR-50.csv", sep="\t", encoding="utf-16")
 
 # cleaning column names
 df.columns = df.columns.str.strip().str.replace('\ufeff', '', regex=True)
