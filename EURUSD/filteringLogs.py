@@ -2,7 +2,9 @@ import pandas as pd
 import glob
 
 # path to all csv files
-files = glob.glob(".RawLogs/*.csv")
+# files = glob.glob("MR-v1/RawLogs/*.csv")
+# files = glob.glob("MR-v2/RawLogs/*.csv")
+files = glob.glob("MR-v3/RawLogs/*.csv")
 
 # read and merge all files
 df_list = []
@@ -17,6 +19,8 @@ df = pd.concat(df_list, ignore_index=True)
 filtered = df[df["LineLength"] > 150]
 
 # save
-filtered.to_csv("./FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
+# filtered.to_csv("MR-v1/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
+# filtered.to_csv("MR-v2/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
+filtered.to_csv("MR-v3/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
 
 print("Len: ", len(filtered))

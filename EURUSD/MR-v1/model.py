@@ -11,24 +11,19 @@ class ReversalModel:
         self.feature_columns = None
 
     def load_data(self, filepath: str) -> pd.DataFrame:
-        """
-        Загружаем исторический датасет.
-        """
+
         df = pd.read_csv(filepath, sep=";", encoding="utf-8")
         df = df[df['LineLength'] >= 150].copy()
 
-        # создаем целевую переменную
+        # target variable
         df['target'] = ((df['LineLength'] >= 150) & (df['LineLength'] <= 175)).astype(int)
 
-        # извлекаем час старта как отдельный признак
+        # start time as a separate feature
         df['Hour'] = pd.to_datetime(df['StartTime'], format="%H:%M").dt.hour
 
         return df
 
     def parse_duration(self, duration_str):
-        """
-        Преобразует Duration из формата HHH:MM[:SS] в часы (float)
-        """
         try:
             parts = str(duration_str).split(':')
             if len(parts) == 2:  # "HH:MM"
@@ -43,16 +38,12 @@ class ReversalModel:
             return None
 
     def prepare_features(self, df: pd.DataFrame):
-        """
-        Подготовка признаков: Direction, Hour, Angle, Weekday, Duration
-        """
         X = df[['Direction', 'Hour', 'Angle', 'Weekday', 'Duration']].copy()
         y = df['target']
 
-        # кодируем Direction: BUY=1, SELL=0
+        # Direction: BUY=1, SELL=0
         X['Direction'] = X['Direction'].map({'BUY': 1, 'SELL': 0})
 
-        # обрабатываем Duration
         if pd.api.types.is_numeric_dtype(X['Duration']):
             X['Duration'] = X['Duration'].astype(float)
         else:
@@ -62,9 +53,7 @@ class ReversalModel:
         return X, y
 
     def train(self, df: pd.DataFrame):
-        """
-        Обучение модели RandomForest и сохранение на диск
-        """
+
         X, y = self.prepare_features(df)
 
         X_train, X_test, y_train, y_test = train_test_split(
@@ -79,28 +68,24 @@ class ReversalModel:
         )
         self.model.fit(X_train, y_train)
 
-        # оценка качества
+        # quality assessment
         probs = self.model.predict_proba(X_test)[:, 1]
         auc = roc_auc_score(y_test, probs)
         brier = brier_score_loss(y_test, probs)
 
         print(f"[INFO] AUC: {auc:.3f}, Brier score: {brier:.3f}")
 
-        # сохраняем модель
+        # save model
         joblib.dump((self.model, self.feature_columns), self.model_path)
-        print(f"[INFO] Модель сохранена в {self.model_path}")
+        print(f"[INFO] Model saved in {self.model_path}")
 
-        # важность признаков
+        # significance of signs
         self.feature_importance()
 
     def load_model(self):
         self.model, self.feature_columns = joblib.load(self.model_path)
 
     def predict_probability(self, new_data: dict) -> float:
-        """
-        Получение вероятности разворота для новой линии.
-        new_data = {"Direction":"SELL","Hour":16,"Angle":1.2,"Weekday":2,"Duration":24}
-        """
         if self.model is None:
             self.load_model()
 
@@ -116,13 +101,10 @@ class ReversalModel:
         return prob
 
     def feature_importance(self):
-        """
-        Выводит важность признаков у RandomForest
-        """
         if self.model is None:
-            print("[WARN] Модель не обучена")
+            print("[WARN] The model is not trained")
             return
 
         importances = self.model.feature_importances_
         for col, imp in sorted(zip(self.feature_columns, importances), key=lambda x: x[1], reverse=True):
-            print(f"[INFO] Признак {col}: важность {imp:.4f}")
+            print(f"[INFO] Feature {col}: significance {imp:.4f}")

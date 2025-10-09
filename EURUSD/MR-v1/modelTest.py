@@ -3,18 +3,18 @@ from model import ReversalModel
 if __name__ == "__main__":
     model = ReversalModel()
 
-    # 1. обучаем модель
+    # train the model
     df = model.load_data("./MR-v1/MLDataset.csv")
     model.train(df)
 
-    # 2. тестовые примеры (без LineLength!)
+    # test examples
     newLines = [
         {
             "Direction": "SELL",
             "Hour": 15,
             "Angle": 1.1,
             "Weekday": 2,
-            "Duration": 24  # часы, можно подставить реальные значения
+            "Duration": 24
         },
         {
             "Direction": "BUY",
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         }
     ]
 
-    # 3. получаем вероятности
+    # obtain probabilities
     for i, line in enumerate(newLines, start=1):
         prob = model.predict_probability(line)
-        print(f"[CASE {i}] Вероятность разворота в диапазоне 150-175: {prob:.2%}")
+        print(f"[CASE {i}] Probability of reversal within the range 150-175: {prob:.2%}")
