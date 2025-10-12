@@ -4,7 +4,8 @@ import glob
 # path to all csv files
 # files = glob.glob("MR-v1/RawLogs/*.csv")
 # files = glob.glob("MR-v2/RawLogs/*.csv")
-files = glob.glob("MR-v3/RawLogs/*.csv")
+# files = glob.glob("MR-v3/RawLogs/*.csv")
+files = glob.glob("MR-v2/MR-v2.1/RawLogs/*.csv")
 
 # read and merge all files
 df_list = []
@@ -21,6 +22,7 @@ filtered = df[df["LineLength"] > 150]
 # save
 # filtered.to_csv("MR-v1/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
 # filtered.to_csv("MR-v2/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
-filtered.to_csv("MR-v3/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
+# filtered.to_csv("MR-v3/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
+filtered.to_csv("MR-v2/MR-v2.1/FilteredLogs.csv", sep=";", index=False, encoding="utf-8")
 
 print("Len: ", len(filtered))

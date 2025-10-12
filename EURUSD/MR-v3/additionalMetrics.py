@@ -14,7 +14,7 @@ df["EndTime"] = pd.to_datetime(df["EndTime"], format="%d.%m.%Y %H:%M")
 
 # === calculate Duration and Angle ===
 df["Duration_td"] = df["EndTime"] - df["StartTime"]
-df["Duration"] = df["Duration_td"].dt.total_seconds() / 60  # минуты
+df["Duration"] = df["Duration_td"].dt.total_seconds() / 60
 df["Duration_hours"] = df["Duration_td"].dt.total_seconds() / 3600
 df["Angle"] = (df["LineLength"] / df["Duration_hours"]).round(5)
 

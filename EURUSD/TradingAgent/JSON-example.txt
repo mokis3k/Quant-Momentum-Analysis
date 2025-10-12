@@ -1,0 +1,34 @@
+{
+  "Direction":"BUY"|"SELL",
+  "StartTime":"dd.mm.yyyy HH:MM",
+  "StartPrice":1.23456,
+  "EndTime":"dd.mm.yyyy HH:MM",
+  "EndPrice":1.23567,
+  "LineLength":185,
+  "AvgDiff":0.044,
+  "ImpulseDiff":0.1685,
+  "PrevLineLength":-189.0625,
+  "MaxDeviation":0.6843,
+  "Duration":990,         
+  "Angle":9.21212,
+}
+
+------------------------MQL5 JSON data------------------------
+direction
+idx
+Start
+End
+LineLength
+AvgDiff
+ImpulseDiff
+PrevLineLength
+MaxDeviation
+Duration
+Angle
+
+------------------------Python JSON data------------------------
+probability
+action
+sl
+tp
+risk
