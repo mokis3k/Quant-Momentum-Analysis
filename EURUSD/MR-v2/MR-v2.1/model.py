@@ -84,7 +84,7 @@ class ReversalModel:
 
         self.pipeline.fit(X, y)
 
-        # оценка качества на последнем временном сплите
+        # quality assessment on the last temporary split
         last_split_index = list(tscv.split(X))[-1]
         X_train_idx, X_test_idx = last_split_index
         X_test = X.iloc[X_test_idx]

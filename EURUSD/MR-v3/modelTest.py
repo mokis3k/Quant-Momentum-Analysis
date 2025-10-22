@@ -1,57 +1,39 @@
-from model import ReversalModel
+import pandas as pd
+import joblib
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+
+MODEL_PATH = "reversal_model_multi.pkl"
+DATA_PATH = "dataset.csv"
+
+def main():
+    obj = joblib.load(MODEL_PATH)
+    pipeline = obj["pipeline"]
+    feature_columns = obj["feature_columns"]
+
+    df = pd.read_csv(DATA_PATH, sep=";", encoding="utf-8")
+
+    length_bins = list(range(50, 525, 25))
+    labels = [f"{a}-{b}" for a, b in zip(length_bins[:-1], length_bins[1:])]
+    df["target"] = pd.cut(df["LineLength"], bins=length_bins, labels=labels, include_lowest=True, right=False)
+    df = df[df["target"].notna()].copy()
+
+    X = df[feature_columns].copy()
+    y_true = df["target"].astype(str)
+
+    y_pred = pipeline.predict(X)
+    probs = pipeline.predict_proba(X)
+
+    acc = accuracy_score(y_true, y_pred)
+    print(f"[TEST] Accuracy: {acc:.3f}")
+    print("[TEST] Classification report:")
+    print(classification_report(y_true, y_pred, zero_division=0))
+    print("[TEST] Confusion matrix:")
+    print(confusion_matrix(y_true, y_pred))
+
+    sample_probs = dict(zip(pipeline.classes_, probs[0]))
+    print("\n[TEST] Probabilities for first sample:")
+    for k, v in sample_probs.items():
+        print(f"  {k}: {v:.3f}")
 
 if __name__ == "__main__":
-    model = ReversalModel()
-
-    # train the model
-    df = model.load_data("./EnrichedDataset.csv")
-    model.train(df)
-
-    # test examples
-    newLines = [
-        {
-            "AvgDiff": 0.048,
-            "PrevLineLength": -210.5,
-            "MaxDeviation": 0.602,
-            "MaxImpulse": 0.185,
-            "Duration": 8420,
-            "Angle": 1.52
-        },
-        {
-            "AvgDiff": 0.056,
-            "PrevLineLength": -125.7,
-            "MaxDeviation": 0.355,
-            "MaxImpulse": 0.612,
-            "Duration": 6735,
-            "Angle": 2.04
-        },
-        {
-            "AvgDiff": 0.078,
-            "PrevLineLength": -295.2,
-            "MaxDeviation": 0.845,
-            "MaxImpulse": 0.423,
-            "Duration": 3920,
-            "Angle": 3.27
-        },
-        {
-            "AvgDiff": 0.067,
-            "PrevLineLength": -80.9,
-            "MaxDeviation": 0.278,
-            "MaxImpulse": 0.712,
-            "Duration": 5280,
-            "Angle": 1.96
-        },
-        {
-            "AvgDiff": 0.091,
-            "PrevLineLength": -335.8,
-            "MaxDeviation": 0.763,
-            "MaxImpulse": 0.501,
-            "Duration": 7125,
-            "Angle": 2.81
-        }
-    ]
-
-    # obtain probabilities
-    for i, line in enumerate(newLines, start=1):
-        prob = model.predict_probability(line)
-        print(f"[CASE {i}] Probability of reversal within the range 150-175: {prob:.2%}")
+    main()

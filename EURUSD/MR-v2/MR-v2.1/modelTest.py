@@ -3,10 +3,10 @@ import json
 from model import ReversalModel
 
 if __name__ == "__main__":
-    # инициализация модели
+    # model initialisation
     model = ReversalModel(model_path="reversal_model.pkl")
 
-    # примеры входных данных (как JSON от MQL5)
+    # input data examples
     examples = [
         {
             "Direction": "SELL",
@@ -35,14 +35,42 @@ if __name__ == "__main__":
             "MaxDeviation": 0.2308,
             "Duration": 35.25,
             "Angle": 1.7021
+        },
+        {
+            "Direction": "BUY",
+            "StartTime": "13.01.2025 11:15",
+            "EndTime": "15.01.2025 15:45",
+            "StartPrice": 1.01868,
+            "EndPrice": 1.03444,
+            "LineLength": 158,
+            "AvgDiff": 0.0755,
+            "LastCandlesDiff": 0.1254,
+            "PrevLineLength": 34.4398,
+            "MaxDeviation": 0.4651,
+            "Duration": 52.5,
+            "Angle": 3.0095
+        },
+        {
+            "Direction": "BUY",
+            "StartTime": "20.01.2025 01:15",
+            "EndTime": "20.01.2025 17:00",
+            "StartPrice": 1.02683,
+            "EndPrice": 1.04255,
+            "LineLength": 158,
+            "AvgDiff": 0.0876,
+            "LastCandlesDiff": 0.2419,
+            "PrevLineLength": -185.4545,
+            "MaxDeviation": 0.9868,
+            "Duration": 15.75,
+            "Angle": 9.9683
         }
     ]
 
-    # вывод результатов
+    # results
     for i, sample in enumerate(examples, 1):
         try:
             prob = model.predict_probability(sample)
             print(f"[TEST {i}] Input: {json.dumps(sample, ensure_ascii=False)}")
-            print(f"[TEST {i}] → Predicted reversal probability: {prob:.4f}\n")
+            print(f"→ Predicted reversal probability: {prob:.4f}\n")
         except Exception as e:
             print(f"[TEST {i}] Error: {e}\n")
